@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 //Rutes
-//MUHCAS RUTAS
+app.use('/api/empresa',require('./routes/Empresa'));
+app.use('/api/bannerAdmin',require('./routes/AdminBanner'));
 
 module.exports = app;   
