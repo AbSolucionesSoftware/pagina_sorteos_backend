@@ -13,5 +13,6 @@ app.use(express.json());
 //Rutes
 app.use('/api/empresa',require('./routes/Empresa'));
 app.use('/api/bannerAdmin',require('./routes/AdminBanner'));
+app.use('/api/sorteo',require('./routes/Sorteo'));
 
 module.exports = app;   

@@ -4,10 +4,12 @@ const sorteoBoletosShema = new Schema(
     {
         nombre_sorteo: String,
         fecha_sorteo: String,
-        lista_premios:[{
-            pocision: String,
-            premio: String,
-        }],
+        sorteo_activo: Boolean,
+        lista_premios:[
+            {
+                premio: String
+            }
+        ],
         imgSorteoBoletosKey: String,
         imgSorteoBoletosUrl: String,
         boletos:[
