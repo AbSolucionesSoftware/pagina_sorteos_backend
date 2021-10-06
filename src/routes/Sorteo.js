@@ -10,7 +10,7 @@ const {
 } = require('../controllers/Sorteos.controller');
 const auth = require('../middlewares/auth');
 
-router.route('/crearSorteo').post(crearSorteo);
+router.route('/crearSorteo').post( uploadImagen, crearSorteo );
 
 router.route('/getSorteoActivo').get(getSorteoActivos);
 
