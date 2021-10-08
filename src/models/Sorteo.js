@@ -5,6 +5,7 @@ const sorteoBoletosShema = new Schema(
         nombre_sorteo: String,
         fecha_sorteo: String,
         sorteo_activo: Boolean,
+        precio_boleto: String,
         lista_premios:[
             {
                 premio: String

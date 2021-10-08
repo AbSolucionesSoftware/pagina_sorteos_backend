@@ -42,10 +42,6 @@ sorteoCtrl.getSorteoDesactivados = async (req, res) => {
 sorteoCtrl.crearSorteo = (req, res) => {
     try {
         const newSorteo = new sorteosModel(req.body);
-        if(req.file){
-          newSorteo.imgSorteoBoletosKey = req.file.key;
-          newSorteo.imgSorteoBoletosUrl = req.file.location;
-        }
         newSorteo.sorteo_activo = true;
         newSorteo.save(req.body);
         res.status(200).json({message: "Sorteo agregado con exito."});
