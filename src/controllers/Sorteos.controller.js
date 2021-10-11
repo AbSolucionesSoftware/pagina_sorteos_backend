@@ -32,8 +32,8 @@ sorteoCtrl.getSorteoActivos = async (req, res) => {
 
 sorteoCtrl.getSorteoDesactivados = async (req, res) => {
   try {
-    const sorteo = await sorteosModel.findOne({sorteo_activo: false});
-    res.status(200).json({sorteo});
+    const sorteos = await sorteosModel.find({sorteo_activo: false});
+    res.status(200).json({sorteos});
   } catch (error) {
     res.status(500).json({message: "Error del server", error})
   }
@@ -41,14 +41,15 @@ sorteoCtrl.getSorteoDesactivados = async (req, res) => {
 
 sorteoCtrl.crearSorteo = (req, res) => {
     try {
-        const newSorteo = new sorteosModel(req.body);
-        if(req.file){
-          newSorteo.imgSorteoBoletosKey = req.file.key;
-          newSorteo.imgSorteoBoletosUrl = req.file.location;
-        }
-        newSorteo.sorteo_activo = true;
-        newSorteo.save(req.body);
-        res.status(200).json({message: "Sorteo agregado con exito."});
+      const newSorteo = new sorteosModel(req.body);
+      console.log(req.body);
+      if(req.file){
+        newSorteo.imgSorteoBoletosKey = req.file.key;
+        newSorteo.imgSorteoBoletosUrl = req.file.location;
+      }
+
+      newSorteo.save();
+      res.status(200).json({message: "Sorteo Creado exitosamente"});
     } catch (error) {
         console.log(error);
     }
@@ -91,8 +92,13 @@ sorteoCtrl.comprarBoleto = async (req,res) => {
 
 sorteoCtrl.buscarBoletos = async (req, res) => {
   try {
-    const { numeroBoleto } = req.body;
-    const boletoBuscado = await sorteosModel.find({"numero_boleto.boletos": numeroBoleto});
+
+    const filterBoleto = {
+      _id: req.params.idSorteo,
+      "boletos.numero_boleto": req.body.numeroBoleto
+  }
+    const boletoBuscado = await sorteosModel.find().where(filterBoleto);
+    // const boletoBuscado = await sorteosModel.find({"numero_boleto.boletos": numeroBoleto});
     res.status(200).json(boletoBuscado);
 } catch (error) {
     res.status(500).json({message: "Error del servidor"}, error);
@@ -104,7 +110,7 @@ sorteoCtrl.activarSorteo = async (req, res) => {
   try {
     const { sorteo_activo } = req.body;
     await sorteosModel.findByIdAndUpdate(req.params.idSorteo, {sorteo_activo: sorteo_activo});
-    res.status(200).json({message: 'Sorteo actualizado'});
+    res.status(200).json({message: 'Sorteo dado de baja existosamente'});
 } catch (error) {
     res.status(500).json({message: "Error del servidor"}, error);
     console.log(error);

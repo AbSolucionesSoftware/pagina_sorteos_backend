@@ -18,12 +18,10 @@ const empresaSorteosShema = new Schema(
         imgEmpresaKey: String,
         imgEmpresaUrl: String,
         quienes_somos: String,
-        preguntas:[
-            {
-                pregunta: String,
-                respuesta: String
-            }
-        ],
+        preguntas:[{
+            pregunta: String,
+            respuesta: String
+        }],
         videos_ganadores: [{
             titulo_video: String,
             link_video: String

@@ -29,21 +29,21 @@ empresaCtrl.createEmpresa = async (req, res) => {
                 } else {
                     newEmpresa.password = hash;
                     newEmpresa.save((err, userStored) => {
-                        if (err) {
-                          res
-                            .status(500)
-                            .json({
-                              message: "Ups, algo paso al registrar el usuario",
-                              err,
-                            });
+                      if (err) {
+                        res
+                          .status(500)
+                          .json({
+                            message: "Ups, algo paso al registrar el usuario",
+                            err,
+                          });
+                      } else {
+                        if (!userStored) {
+                          res.status(404).json({ message: "Error al crear el usuario" });
                         } else {
-                          if (!userStored) {
-                            res.status(404).json({ message: "Error al crear el usuario" });
-                          } else {
-                            res.status(200).json({message: "Usuario agregado."});
-                          }
+                          res.status(200).json({message: "Usuario agregado."});
                         }
-                      })
+                      }
+                    })
                 }
             })
         }
@@ -179,6 +179,7 @@ empresaCtrl.editEmpresa = async (req, res) => {
 
       res.status(200).json({message: "Usuario actualizado."});
   } catch (error) {
+      console.log(error);
       res.status(500).json({message: "Ocurrio un problema en el servidor"});
   }
 }
