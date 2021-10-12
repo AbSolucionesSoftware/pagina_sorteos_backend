@@ -42,12 +42,13 @@ sorteoCtrl.getSorteoDesactivados = async (req, res) => {
 sorteoCtrl.crearSorteo = (req, res) => {
     try {
       const newSorteo = new sorteosModel(req.body);
-      console.log(req.body);
       if(req.file){
         newSorteo.imgSorteoBoletosKey = req.file.key;
         newSorteo.imgSorteoBoletosUrl = req.file.location;
       }
-
+      newSorteo.lista_premios = JSON.parse(req.body.lista_premios);
+      newSorteo.boletos = JSON.parse(req.body.boletos);
+      newSorteo.sorteo_activo = true;
       newSorteo.save();
       res.status(200).json({message: "Sorteo Creado exitosamente"});
     } catch (error) {
@@ -58,13 +59,12 @@ sorteoCtrl.crearSorteo = (req, res) => {
 sorteoCtrl.comprarBoleto = async (req,res) => {
   try {
       const {
-          propietario, 
-          telefono, 
-          domicilio, 
-          ciudad, 
-          pago
+        nombres,
+        apellidos,
+        telefono,
+        estado,
       } = req.body;
-
+      console.log(req.body);
       await sorteosModel.updateOne(
           {
               'boletos._id': req.params.idBoleto
@@ -73,11 +73,12 @@ sorteoCtrl.comprarBoleto = async (req,res) => {
               $set: { 
                   'boletos.$': 
                       { 
-                        propietario: propietario, 
+                        nombres: nombres, 
                         telefono: telefono, 
-                        domicilio: domicilio, 
-                        ciudad: ciudad, 
-                        pago: pago
+                        apellidos: apellidos, 
+                        estado: estado, 
+                        vendido: true,
+                        fecha_pago: "HOY MISMO"
                       } 
               }
           }
@@ -92,18 +93,24 @@ sorteoCtrl.comprarBoleto = async (req,res) => {
 
 sorteoCtrl.buscarBoletos = async (req, res) => {
   try {
-
     const filterBoleto = {
       _id: req.params.idSorteo,
-      "boletos.numero_boleto": req.body.numeroBoleto
-  }
-    const boletoBuscado = await sorteosModel.find().where(filterBoleto);
-    // const boletoBuscado = await sorteosModel.find({"numero_boleto.boletos": numeroBoleto});
+    }
+    console.log(req.body.numeroBoleto);
+    let busqueda = await sorteosModel.findOne(filterBoleto);
+    let boletoBuscado={};
+    busqueda.boletos.forEach(resultado => {
+      console.log(resultado.numero_boleto);
+      if( resultado.numero_boleto === req.body.numeroBoleto){
+        boletoBuscado = busqueda.boletos.filter(pregunta => pregunta.numero_boleto === req.body.numeroBoleto);
+      }
+    });
+    console.log(boletoBuscado)
     res.status(200).json(boletoBuscado);
-} catch (error) {
-    res.status(500).json({message: "Error del servidor"}, error);
-    console.log(error);
-}
+  } catch (error) {
+      res.status(500).json({message: "Error del servidor"}, error);
+      console.log(error);
+  }
 };
 
 sorteoCtrl.activarSorteo = async (req, res) => {
