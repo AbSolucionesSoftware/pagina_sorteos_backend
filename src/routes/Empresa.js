@@ -12,6 +12,7 @@ const {
     eliminarVideo,
     uploadImagen
 } = require('../controllers/Empresa.controller');
+
 const auth = require('../middlewares/auth');
 
 router.route('/empresaSorteo').post(createEmpresa).get(getEmpresa)

@@ -56,6 +56,23 @@ sorteoCtrl.crearSorteo = (req, res) => {
     }
 };
 
+sorteoCtrl.editSorteo = (req, res) => {
+  try {
+    const newSorteo = new sorteosModel(req.body);
+    if(req.file){
+      newSorteo.imgSorteoBoletosKey = req.file.key;
+      newSorteo.imgSorteoBoletosUrl = req.file.location;
+    }
+    newSorteo.lista_premios = JSON.parse(req.body.lista_premios);
+    newSorteo.boletos = JSON.parse(req.body.boletos);
+    newSorteo.sorteo_activo = true;
+    newSorteo.save();
+    res.status(200).json({message: "Sorteo Creado exitosamente"});
+  } catch (error) {
+      console.log(error);
+  }
+};
+
 sorteoCtrl.comprarBoleto = async (req,res) => {
   try {
       const {
@@ -71,19 +88,14 @@ sorteoCtrl.comprarBoleto = async (req,res) => {
           },
           {
               $set: { 
-                  'boletos.$': 
-                      { 
-                        nombres: nombres, 
-                        telefono: telefono, 
-                        apellidos: apellidos, 
-                        estado: estado, 
-                        vendido: true,
-                        fecha_pago: "HOY MISMO"
-                      } 
-              }
-          }
+                    'boletos.$.nombres': nombres,
+                    'boletos.$.apellidos': apellidos,
+                    'boletos.$.telefono': telefono,
+                    'boletos.$.estado': estado,
+                    'boletos.$.vendido': true,
+                  }
+        }
       );
-      
       res.status(200).json({message: "Boleto Comprado exitosamente"});
   } catch (error) {
       res.status(500).json({message: "Error del servidor"}, error);
@@ -93,22 +105,17 @@ sorteoCtrl.comprarBoleto = async (req,res) => {
 
 sorteoCtrl.buscarBoletos = async (req, res) => {
   try {
-    const filterBoleto = {
-      _id: req.params.idSorteo,
-    }
-    console.log(req.body.numeroBoleto);
-    let busqueda = await sorteosModel.findOne(filterBoleto);
-    let boletoBuscado={};
+    let busqueda = await sorteosModel.findOne({sorteo_activo: true});
+    let boletoBuscado = {};
     busqueda.boletos.forEach(resultado => {
-      console.log(resultado.numero_boleto);
       if( resultado.numero_boleto === req.body.numeroBoleto){
         boletoBuscado = busqueda.boletos.filter(pregunta => pregunta.numero_boleto === req.body.numeroBoleto);
       }
     });
-    console.log(boletoBuscado)
+    console.log(boletoBuscado);
     res.status(200).json(boletoBuscado);
   } catch (error) {
-      res.status(500).json({message: "Error del servidor"}, error);
+      res.status(500).json({message: "Error del servidor"});
       console.log(error);
   }
 };

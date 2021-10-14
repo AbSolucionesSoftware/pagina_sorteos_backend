@@ -11,6 +11,5 @@ async function main() {
         console.log(error);
         console.log('error en esta linea');
     }
-
 }
 main();
