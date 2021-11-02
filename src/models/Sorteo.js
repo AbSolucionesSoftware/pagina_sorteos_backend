@@ -6,9 +6,29 @@ const sorteoBoletosShema = new Schema(
         fecha_sorteo: String,
         sorteo_activo: Boolean,
         precio_boleto: String,
-        lista_premios:[{
-            premio: String
-        }],
+        lista_premios:{
+            premio_uno: {
+                nombre_premio: String,
+                imagen: {
+                    url: String,
+                    key: String
+                }
+            },
+            premio_dos: {
+                nombre_premio: String,
+                imagen: {
+                    url: String,
+                    key: String
+                }
+            },
+            premio_tres:{
+                nombre_premio: String,
+                imagen: {
+                    url: String,
+                    key: String
+                }
+            }
+        },
         imgSorteoBoletosKey: String,
         imgSorteoBoletosUrl: String,
         boletos:[{

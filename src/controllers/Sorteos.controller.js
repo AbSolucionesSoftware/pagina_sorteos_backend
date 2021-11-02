@@ -63,7 +63,7 @@ sorteoCtrl.editSorteo = (req, res) => {
       newSorteo.imgSorteoBoletosKey = req.file.key;
       newSorteo.imgSorteoBoletosUrl = req.file.location;
     }
-    newSorteo.lista_premios = JSON.parse(req.body.lista_premios);
+    // newSorteo.lista_premios = JSON.parse(req.body.lista_premios);
     newSorteo.boletos = JSON.parse(req.body.boletos);
     newSorteo.sorteo_activo = true;
     newSorteo.save();
