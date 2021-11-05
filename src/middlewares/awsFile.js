@@ -56,6 +56,7 @@ const fileFilter = (req, file, cb) => {
 
 //Funcion que elimina la imagen deL Bucket
 subir.eliminarImagen = (keyDeleted) => {
+  console.log("borro imagen");
     s3.deleteObject({
       Bucket: process.env.NAME_BUCKET_AMS,
       Key: keyDeleted
