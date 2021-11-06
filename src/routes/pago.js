@@ -6,7 +6,7 @@ const SorteosModel = require("../models/Sorteo");
 
 router.route("/").post(async (req, res) => {
   try {
-    const { cliente, boletos, total, id } = req.body;
+    const { cliente, boletos, total, id_paypal } = req.body;
 
     console.log("Body", req.body);
 
@@ -25,7 +25,7 @@ router.route("/").post(async (req, res) => {
         fecha_pago: hoy,
       });
     }
-    
+
 
     console.log("boletosFinal", boletosFinal);
 
@@ -34,7 +34,7 @@ router.route("/").post(async (req, res) => {
             cliente,
             boletos: boletosFinal,
             total,
-            id_paypal: id,
+            id_paypal,
             pagado: false
         }
     );
