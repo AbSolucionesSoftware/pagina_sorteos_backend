@@ -25,6 +25,7 @@ router.route("/").post(async (req, res) => {
         fecha_pago: hoy,
       });
     }
+    
 
     console.log("boletosFinal", boletosFinal);
 
