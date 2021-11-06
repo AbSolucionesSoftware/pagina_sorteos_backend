@@ -14,5 +14,6 @@ app.use(express.json());
 app.use('/api/empresa',require('./routes/Empresa'));
 app.use('/api/bannerAdmin',require('./routes/AdminBanner'));
 app.use('/api/sorteo',require('./routes/Sorteo'));
+app.use('/api/pago',require('./routes/pago'));
 
 module.exports = app;   
