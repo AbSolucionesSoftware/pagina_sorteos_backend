@@ -11,6 +11,7 @@ bannerCtrlAdmin.uploadImagen = (req, res, next) => {
     });
 };
 
+
 bannerCtrlAdmin.createBanner = async (req, res) => {
   try {
       const newBanner = new modelBannerAdmin(req.body);
