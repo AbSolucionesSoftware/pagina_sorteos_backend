@@ -6,6 +6,7 @@ const sorteosModel = require("../models/Sorteo");
 
 const CuponModel = require('../models/CuponesSorteo');
 const moment = require('moment');
+moment.locale('es');
 
 sorteoCtrl.uploadImagen = (req, res, next) => {
   uploadImagen.upload(req, res, function (err) {
@@ -236,8 +237,8 @@ sorteoCtrl.activarSorteo = async (req, res) => {
 sorteoCtrl.crearCuponesSorteo = async (req,res) => {
   try {
     const { cantidad } = req.body;
-
-    const hoy = moment();
+    
+    const hoy = moment().locale('es-mx').format('YYYY-MM-DD');
 
     for(i = 0; i < parseInt(cantidad); i++){
       const newCoupon = new CuponModel({

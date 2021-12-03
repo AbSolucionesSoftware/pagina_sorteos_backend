@@ -5,14 +5,17 @@ const moment = require("moment");
 const SorteosModel = require("../models/Sorteo");
 const CuponesModel = require('../models/CuponesSorteo');
 
+moment.locale('es');
+
 router.route("/").post(async (req, res) => {
   try {
     const { cliente, boletos, total, id_paypal } = req.body;
 
     console.log("Body", req.body);
+    moment.locale('es');
 
     let boletosFinal = [];
-    const hoy = moment();
+    const hoy = moment().locale('es-mx').format();
 
     for (let i = 0; i < boletos.length; i++) {
       boletosFinal.push({
@@ -80,6 +83,7 @@ router.route('/cupon/:Cupon').post(async (req,res) => {
   try {
     const cupon = req.params.Cupon;
     console.log(cupon);
+    
 
     const cupon_base = await CuponesModel.findOne({ cupon: cupon });
 
@@ -90,7 +94,7 @@ router.route('/cupon/:Cupon').post(async (req,res) => {
     console.log("Body", req.body);
 
     let boletosFinal = [];
-    const hoy = moment();
+    const hoy = moment().locale('es-mx').format();
 
     for (let i = 0; i < boletos.length; i++) {
       boletosFinal.push({
