@@ -2,7 +2,10 @@ const sorteoCtrl = {};
 const uploadImagen = require("../middlewares/awsFile");
 const { eliminarImagen } = require("../middlewares/awsFile");
 const sorteosModel = require("../models/Sorteo");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
+
+const CuponModel = require('../models/CuponesSorteo');
+const moment = require('moment');
 
 sorteoCtrl.uploadImagen = (req, res, next) => {
   uploadImagen.upload(req, res, function (err) {
@@ -24,9 +27,11 @@ sorteoCtrl.getSorteos = async (req, res) => {
 
 sorteoCtrl.getSorteoActivos = async (req, res) => {
   try {
-    const sorteo = await sorteosModel.findOne({ sorteo_activo: true });
-    // console.log(sorteo);
-    res.status(200).json({ sorteo });
+    let sorteo = await sorteosModel.findOne({ sorteo_activo: true });
+    let cupones = [];
+    if (sorteo) cupones = await CuponModel.find().where({id_sorteo: sorteo._id});
+    console.log(sorteo);
+    res.status(200).json({ sorteo, cupones: cupones.length > 0 ? cupones : [] });
   } catch (error) {
     res.status(500).json({ message: "Error del server", error });
   }
@@ -41,44 +46,44 @@ sorteoCtrl.getSorteoDesactivados = async (req, res) => {
   }
 };
 
-
 sorteoCtrl.crearSorteo = async (req, res) => {
   try {
     const newSorteo = new sorteosModel(req.body);
+    // console.log(req.body);
     if (req.file) {
       newSorteo.imgSorteoBoletosKey = req.file.key;
       newSorteo.imgSorteoBoletosUrl = req.file.location;
       newSorteo.lista_premios = {
         premio_uno: {
-            nombre_premio: "",
-            imagen: {
-                url: "",
-                key: ""
-            }
+          nombre_premio: "",
+          imagen: {
+            url: "",
+            key: "",
+          },
         },
         premio_dos: {
-            nombre_premio: "",
-            imagen: {
-                url: "",
-                key: ""
-            }
+          nombre_premio: "",
+          imagen: {
+            url: "",
+            key: "",
+          },
         },
-        premio_tres:{
-            nombre_premio: "",
-            imagen: {
-                url: "",
-                key: ""
-            }
-        }
+        premio_tres: {
+          nombre_premio: "",
+          imagen: {
+            url: "",
+            key: "",
+          },
+        },
       };
       newSorteo.boletos = JSON.parse(req.body.boletos);
       newSorteo.sorteo_activo = true;
       const sorteo = await newSorteo.save();
       res.status(200).json(sorteo);
     }
-
   } catch (error) {
     console.log(error);
+    res.status(500).json({message: "Ocurrio un error", error});
   }
 };
 
@@ -86,13 +91,14 @@ sorteoCtrl.editSorteo = async (req, res) => {
   try {
     const sorteo = req.body;
     const sorteoBase = await sorteosModel.findById(req.params.idSorteo);
-    if(req.file){
-      if(sorteoBase.imgSorteoBoletosKey) eliminarImagen(sorteoBase.imgSorteoBoletosKey);
+    if (req.file) {
+      if (sorteoBase.imgSorteoBoletosKey)
+        eliminarImagen(sorteoBase.imgSorteoBoletosKey);
       sorteo.imgSorteoBoletosKey = req.file.key;
       sorteo.imgSorteoBoletosUrl = req.file.location;
-      await sorteosModel.findByIdAndUpdate(req.params.idSorteo,sorteo);
-    }else{
-      await sorteosModel.findByIdAndUpdate(req.params.idSorteo,sorteo);
+      await sorteosModel.findByIdAndUpdate(req.params.idSorteo, sorteo);
+    } else {
+      await sorteosModel.findByIdAndUpdate(req.params.idSorteo, sorteo);
     }
     res.status(200).json({ message: "Sorteo Creado exitosamente" });
   } catch (error) {
@@ -170,7 +176,6 @@ sorteoCtrl.agregarPremioLista = async (req, res) => {
   }
 };
 
-
 sorteoCtrl.comprarBoleto = async (req, res) => {
   try {
     const { nombres, apellidos, telefono, estado } = req.body;
@@ -227,5 +232,38 @@ sorteoCtrl.activarSorteo = async (req, res) => {
     console.log(error);
   }
 };
+
+sorteoCtrl.crearCuponesSorteo = async (req,res) => {
+  try {
+    const { cantidad } = req.body;
+
+    const hoy = moment();
+
+    for(i = 0; i < parseInt(cantidad); i++){
+      const newCoupon = new CuponModel({
+        cupon: generateCode(10),
+        id_sorteo: req.params.idSorteo,
+        canjeado: false,
+        fecha_creado: hoy
+      })
+      await newCoupon.save();
+    }
+
+    res.status(200).json({message: "Cupones Creados"});
+
+  } catch (error) {
+    res.status(500).json({message: "Parece que ocurrio un error."})
+  }
+}
+
+const generateCode = (length) => {
+  var result = "";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
 
 module.exports = sorteoCtrl;

@@ -9,6 +9,11 @@ mongoose.connect(URI, {
     // useFindAndModify: false
 });
 
+// mongoose
+//      .connect( URI)
+//      .then(() => console.log( 'Database Connected' ))
+//      .catch(err => console.log( err ));
+
 const connection = mongoose.connection;
 
 connection.once('open', () => {
