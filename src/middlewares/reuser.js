@@ -10,6 +10,16 @@ ctrlFuncticon.generateCode = (length) => {
     return result;
 }
 
+ctrlFuncticon.generateFolio = async (length) => {
+    var result = "";
+    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
 ctrlFuncticon.fechaCaducidad = (fecha) => {
 	if (!fecha) {
 		return null;

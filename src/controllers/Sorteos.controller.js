@@ -7,6 +7,7 @@ const sorteosModel = require("../models/Sorteo");
 const CuponModel = require('../models/CuponesSorteo');
 const moment = require('moment');
 moment.locale('es');
+const PagoModel = require('../models/Pago');
 
 sorteoCtrl.uploadImagen = (req, res, next) => {
   uploadImagen.upload(req, res, function (err) {
@@ -253,7 +254,25 @@ sorteoCtrl.crearCuponesSorteo = async (req,res) => {
     res.status(200).json({message: "Cupones Creados"});
 
   } catch (error) {
-    res.status(500).json({message: "Parece que ocurrio un error."})
+    res.status(500).json({message: "Parece que ocurrio un error."});
+  }
+}
+
+sorteoCtrl.obteneBoletosUsuario = async (req,res) => {
+  try {
+    const folio = req.params.Folio;
+    if(!folio){
+      res.status(404).json({message: "El folio obligatorio."});
+    }else{
+      const folio_base = await PagoModel.findOne({folio: folio});
+      if(folio_base){
+        res.status(200).json({folio: folio_base})
+      }else{
+        res.status(404).json({message: "El folio no encontrado."});
+      }
+    }
+  } catch (error) {
+    res.status(500).json({message: "Parece que ocurrio un error."});
   }
 }
 

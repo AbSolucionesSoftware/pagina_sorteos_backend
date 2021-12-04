@@ -10,7 +10,8 @@ const {
     activarSorteo,
     agregarPremioLista,
     editSorteo,
-    crearCuponesSorteo
+    crearCuponesSorteo,
+    obteneBoletosUsuario
 } = require('../controllers/Sorteos.controller');
 const auth = require('../middlewares/auth');
 
@@ -31,6 +32,9 @@ router.route('/activeSorteo/:idSorteo').put(activarSorteo);
 router.route('/editarSorteo/:idSorteo/editar').put(uploadImagen,editSorteo);
 
 router.route('/crear/cupones/:idSorteo').post(crearCuponesSorteo);
+
+
+router.route('/folio/compra/:Folio').get(obteneBoletosUsuario);
 
 
 module.exports = router;

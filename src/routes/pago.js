@@ -4,6 +4,7 @@ const PagoModel = require("../models/Pago");
 const moment = require("moment");
 const SorteosModel = require("../models/Sorteo");
 const CuponesModel = require('../models/CuponesSorteo');
+const { generateFolio } = require("../middlewares/reuser");
 
 moment.locale('es');
 
@@ -37,6 +38,8 @@ router.route("/").post(async (req, res) => {
         {
             cliente,
             boletos: boletosFinal,
+            folio: await generateFolio(10),
+            cupon: false,
             total,
             id_paypal,
             pagado: false
@@ -44,8 +47,6 @@ router.route("/").post(async (req, res) => {
     );
 
     const data = await newPay.save();
-
-    console.log("newPay", data);
 
     for (let i = 0; i < boletosFinal.length; i++) {
       await SorteosModel.updateOne(
@@ -72,7 +73,7 @@ router.route("/").post(async (req, res) => {
 
     console.log("Pagado");
 
-    res.status(200).json({messege: "Pago realizado"});
+    res.status(200).json({messege: "Pago realizado", folio: data });
   } catch (error) {
       console.log(error);
     res.status(500).json({ messege: "Error de pago", error: error });
@@ -116,6 +117,8 @@ router.route('/cupon/:Cupon').post(async (req,res) => {
         {
             cliente,
             boletos: boletosFinal,
+            folio: await generateFolio(10),
+            cupon: true,
             total,
             id_paypal,
             pagado: false
@@ -154,7 +157,7 @@ router.route('/cupon/:Cupon').post(async (req,res) => {
       total: total
     })
 
-      res.status(200).json({ message: "Error de pago"});
+      res.status(200).json({ message: "Cupon cvajeado", folio: data});
     }else{
       res.status(404).json({ message: "Cupon no encontrado"});
     }

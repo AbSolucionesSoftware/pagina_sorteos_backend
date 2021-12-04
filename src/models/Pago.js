@@ -12,6 +12,11 @@ const PagoSchema = new Schema(
             _id: String,
             numero_boleto: String,
         }],
+        folio: {
+            type: String,
+            unique: true
+        },
+        cupon: Boolean,
         total: String,
         id_paypal: String,
         pagado: Boolean,
