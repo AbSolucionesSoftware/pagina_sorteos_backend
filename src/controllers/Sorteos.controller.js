@@ -51,7 +51,7 @@ sorteoCtrl.getSorteoDesactivados = async (req, res) => {
 sorteoCtrl.crearSorteo = async (req, res) => {
   try {
     const newSorteo = new sorteosModel(req.body);
-    // console.log(req.body);
+    console.log(req.body);
     if (req.file) {
       newSorteo.imgSorteoBoletosKey = req.file.key;
       newSorteo.imgSorteoBoletosUrl = req.file.location;
