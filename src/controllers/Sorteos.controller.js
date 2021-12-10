@@ -82,6 +82,8 @@ sorteoCtrl.crearSorteo = async (req, res) => {
       newSorteo.sorteo_activo = true;
       const sorteo = await newSorteo.save();
       res.status(200).json(sorteo);
+    }else{
+      res.status(500).json({message: "imagen obligatoria"});
     }
   } catch (error) {
     console.log(error);
